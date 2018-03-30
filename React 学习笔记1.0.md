@@ -4,24 +4,59 @@ React可以将代码封装成组建，像插入 HTML 一样插入到网页中。
 
 注意：
 1. 关于报错 Adjacent JSX elements must be wrapped in an enclosing tag (10:6) 
-  `class App extends Component {`
-  `  render() {`
-  `    return (`
-  `      <div className="App">`
-  `        text`
-  `      </div>`
-  `      <div>`
-  `       <MyComponent />`
-  `      </div>`
-  `    );`
-  `  }`
-  `}`
+
+  ```Java
+  class App extends Component {
+    render() {
+      return (
+        <div className="App">
+          text
+        </div>
+        <div>
+         <MyComponent />
+        </div>
+      );
+    }
+  }
+  ```
+
+  ​
   原因是在同时 return 两个 div 元素。 
   具体解释：
   普通代码长这样：
-  ![截图1](截图1.png)
+
+  ```javascript
+  class App extends React.Component {
+    render(){    
+      return (      
+        <div>          
+          <h1>Welcome to React</h1>      
+        </div>    
+      );  
+    }
+  }
+  ```
+
+  ​
   但是实际上内部是：
-  ![截图2](截图2.png)
+
+  ```Ja
+  _createClass(App, [{
+      key: 'render',
+      value: function render() {
+        return React.createElement(
+          'div',
+          null,
+          React.createElement(
+            'h1',
+            null,
+            'Welcome to React'
+          )
+        );
+      }
+    }]);
+  ```
+
   我们可以看到这里返回的是一个 react element 内部有一个element
   但如果像最上面错误写法那样就是两个 return 每个 return 里面有一个 react element，显然是错误的。
 
@@ -81,9 +116,12 @@ props 的主要作用是让使用该组件的父组件可以传入参数来配�
 那么，如果子组建想改变他自己的 name prop呢，这通常需要通过 child event & parent callbacks。例如，子组建可能有事件 onNameChanged, 父辈通过回调函数监听事件：
 `<MyChild name={this.state.childsName} onNameChanged={this.handleName} />`
 子组建将通过 `this.props.onNameChanged('New name')` 将新的名字作为参数传递给回调函数，然后父辈可通过 event handler 来更新自己的 state，例如：
-`handleName: function(newName) {`
-`   this.setState({ childsName: newName });`
-`}`
+
+```javascript
+handleName: function(newName) {
+   this.setState({ childsName: newName });
+}
+```
 
 **简单来说**：
 state 是让组件控制自己的状态，props 是让外部对组件自己进行配置。
